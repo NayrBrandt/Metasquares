@@ -11,45 +11,26 @@ def is_valid_square(square):
         True if the points form a valid square, False otherwise.
     """
 
-    # Check for unique points
-    if len(square) != 4:
+    # Check all points are unique
+    if len(set(tuple(p) for p in square)) != 4:
         return False
     
-    # Sort points by row and then column
-    square = sorted(square)
+    # Calculate all pairwise distances
+    distances = []
+    for p1, p2 in combinations(square, 2):
+        dist = ((p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2) ** 0.5
+        distances.append(dist)
     
-    for point in range(1, len(square)):
-        curr_point = square[point]
-        prev_point = square[point-1]
-        
-        if curr_point[0] == prev_point[0] and curr_point[1] == prev_point[1]:
-            return False
+    # Sort distances
+    distances.sort()
     
-    # Check side length consistency
-    # point 2 - point 1
-    side1 = ((square[1][0] - square[0][0]) ** 2) + ((square[1][1] - square[0][1]) ** 2) ** 0.5
-    # point 4 - point 3
-    side2 = ((square[3][0] - square[2][0]) ** 2)  +((square[3][1] - square[2][1]) ** 2) ** 0.5
-    # point 3 - point 1
-    side3 = ((square[2][0] - square[0][0]) ** 2) + ((square[2][1] - square[0][1]) ** 2) ** 0.5
-    # point 4 - point 2
-    side4 = ((square[3][0] - square[1][0]) ** 2) + ((square[3][1] - square[1][1]) ** 2) ** 0.5
+    # For a square: 4 sides equal, 2 diagonals equal, and diagonal > side
+    if len(distances) == 6:
+        side = distances[0]
+        if distances[0] == distances[1] == distances[2] == distances[3] and distances[4] == distances[5] and distances[4] > distances[0]:
+            return True
     
-    
-    # Check if both pairs of sides are equal
-    if not (side1 == side2 and side3 == side4):
-        return False
-    
-
-    # point 1 - point 4
-    diag_length1 = (((square[0][0] - square[3][0]) ** 2) + ((square[0][1] - square[3][1]) ** 2)) ** 0.5
-    # point 2 - point 3
-    diag_length2 = (((square[1][0] - square[2][0]) ** 2) + ((square[1][1] - square[2][1]) ** 2)) ** 0.5
-
-    if diag_length1 != diag_length2:
-        return False    
-
-    return True
+    return False
 
 def get_all_points(board_size):
     all_points = []
@@ -70,9 +51,9 @@ def get_squares(board_size, num_points = 4):
         if is_valid_square(square):
             unique_squares.append(square)
                     
-              
+    print("There are " + str(len(unique_squares)) + " unique squares on a " + str(board_size) + "x" + str(board_size) + " board.")
     return unique_squares
 
 
 
-# print(is_valid_square([[0, 1], [1, 7], [6, 0], [7, 6]]))
+print("testing valid square: " + str(is_valid_square([[0, 1], [1, 7], [6, 0], [7, 6]])))

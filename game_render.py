@@ -37,8 +37,12 @@ class GameRender:
         self.draw_board(game_data.game_board)
         self.draw_sidebar(game_data)
 
-    def draw_green(self, x, y):
-        self.screen.blit(green_img, (x, y))
+    def draw_stone(self, x, y, color):
+        if color == 'green':
+            self.screen.blit(green_img, (x, y))
+        elif color == 'purple':
+            self.screen.blit(purple_img, (x, y))
+    
 
     def draw_line(self, start, end, color):
         
@@ -47,16 +51,12 @@ class GameRender:
         angle = pygame.math.Vector2(end[0] - start[0], end[1] - start[1]).angle_to((1,0))
 
         if color == 'green':
-
             line_img = green_line
 
-            rotation = -angle
-
         elif color == 'purple':
-
             line_img = purple_line
 
-            rotation = angle
+        rotation = angle
 
         stretch_tex = pygame.transform.scale(line_img, (int(dist), line_img.get_height() // 2))
 
@@ -65,19 +65,21 @@ class GameRender:
         self.screen.blit(stretch_tex, (start[0]+30, start[1]+30))
     
     def draw_square(self, square, color):
-        coord1 = [square[0][1] * 100, square[0][0] * 100]
-        coord2 = [square[1][1] * 100, square[1][0] * 100]
-        coord3 = [square[2][1] * 100, square[2][0] * 100]
-        coord4 = [square[3][1] * 100, square[3][0] * 100]
+        coord1 = [square[0][0] * 100, square[0][1] * 100]
+        coord2 = [square[1][0] * 100, square[1][1] * 100]
+        coord3 = [square[2][0] * 100, square[2][1] * 100]
+        coord4 = [square[3][0] * 100, square[3][1] * 100]
 
+        # print("coord1 is " + str(coord1))
+        # print("coord2 is " + str(coord2))   
+        # print("coord3 is " + str(coord3))
+        # print("coord4 is " + str(coord4))
 
         self.draw_line(coord1, coord2, color)
-        self.draw_line(coord1, coord3, color)
-        self.draw_line(coord2, coord4, color)
-        self.draw_line(coord3, coord4, color)
+        #self.draw_line(coord1, coord3, color)
+        #self.draw_line(coord2, coord4, color)
+        #self.draw_line(coord3, coord4, color)
 
-    def draw_purple(self, x, y):
-        self.screen.blit(purple_img, (x, y))
 
     def draw_tiles(self, x, y):
         self.screen.blit(tile_img, (x,y))
@@ -123,12 +125,16 @@ class GameRender:
         for col in range(board.cols):
             for row in range(board.rows):
                 if board.board[row][col] == 1:
-                    self.draw_purple(
-                        int(col * sq_size) + 8, int(row * sq_size ) + 8
+                    self.draw_stone(
+                        int(col * sq_size) + 8,
+                        int(row * sq_size ) + 8,
+                        "purple"
                     )
                 elif board.board[row][col] == 2:
-                    self.draw_green(
-                        int(col * sq_size) + 8, int(row * sq_size ) + 8
+                    self.draw_stone(
+                        int(col * sq_size) + 8,
+                        int(row * sq_size ) + 8,
+                        "green"
                     )
 
         for square in self.game_data.player1_squares:

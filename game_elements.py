@@ -24,9 +24,7 @@ class GameBoard:
         self.board = zeros((rows, cols))
 
     def print_board(self):
-
         print((self.board))
-        print(" " + str([1, 2, 3, 4, 5, 6, 7, 8]))
 
     def place_marble(self, row, col, marble):
         self.board[row][col] = marble

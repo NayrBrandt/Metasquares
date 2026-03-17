@@ -23,12 +23,19 @@ class MetaSquares:
 
 
     def score_square(self, square):
+
+        '''
+        Change scoring to be based on rows touched!
+        
+        '''
+
         # point 2 - point 1
-        side1 = ((square[1][0] - square[0][0]) ** 2) + ((square[1][1] - square[0][1]) ** 2) ** 0.5
+        side1 = (((square[1][0] - square[0][0]) ** 2) + ((square[1][1] - square[0][1]) ** 2)) ** 0.5
         # point 4 - point 3
-        side2 = ((square[3][0] - square[2][0]) ** 2)  +((square[3][1] - square[2][1]) ** 2) ** 0.5
+        side2 = (((square[3][0] - square[2][0]) ** 2) + ((square[3][1] - square[2][1]) ** 2)) ** 0.5
 
         area = (side1 +1) * (side2 +1)
+        print("Area is " + str(area))
 
         return int(area)
 
@@ -51,6 +58,8 @@ class MetaSquares:
                     continue
 
                 self.game_data.player1_score += self.score_square(square)
+                print("this is the current square:  ")
+                print(square)
                 p1_sq.append(square)
 
             if all(marble in p2_marb for marble in square):
@@ -73,7 +82,7 @@ class MetaSquares:
 
         col: int = int(math.floor(event.x / self.game_data.sq_size))
         row: int = int(math.floor(event.y / self.game_data.sq_size))
-        print("Col is " + str(col) + "and Row is "+ str(row))
+        
         if self.game_data.game_board.is_valid_loc(row, col):
 
             marble = [row, col]
@@ -93,6 +102,7 @@ class MetaSquares:
             )
 
             self.print_board()
+            print("Col is " + str(col) + " and Row is "+ str(row))
             self.update_players()
 
             if self.game_data.game_board.win(self.game_data.player1_score):
@@ -110,8 +120,10 @@ class MetaSquares:
         pygame.display.update()
 
 
-        self.game_data.turn += 1
-        self.game_data.turn = self.game_data.turn % 2
+
+        # # Refactor this to be simpler
+        # self.game_data.turn += 1
+        # self.game_data.turn = self.game_data.turn % 2
 
 
 
