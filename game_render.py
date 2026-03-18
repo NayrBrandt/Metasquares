@@ -44,17 +44,17 @@ class GameRender:
             self.screen.blit(purple_img, (x, y))
     
 
-    def draw_line(self, start, end, color):
+    def draw_line(self, start, end, color, lineno):
         
-        dist = (((end[0] - start[0]) ** 2) + ((end[1] - start[1]) ** 2)) ** 0.5
-
-        angle = pygame.math.Vector2(end[0] - start[0], end[1] - start[1]).angle_to((1,0))
-
         if color == 'green':
             line_img = green_line
 
         elif color == 'purple':
             line_img = purple_line
+    
+        dist = (((end[0] - start[0]) ** 2) + ((end[1] - start[1]) ** 2)) ** 0.5
+
+        angle = pygame.math.Vector2(end[0] - start[0], end[1] - start[1]).angle_to((1,0))
 
         rotation = angle
 
@@ -62,23 +62,28 @@ class GameRender:
 
         stretch_tex = pygame.transform.rotate(stretch_tex, rotation)
 
-        self.screen.blit(stretch_tex, (start[0]+30, start[1]+30))
+        if ((lineno == 1 or lineno == 4) and (start[1] != end[1])):
+            offset = abs(start[0] - end[0])
+            self.screen.blit(stretch_tex, (start[0]+30 - offset, start[1]+30))    
+        else:
+            self.screen.blit(stretch_tex, (start[0]+30, start[1]+30))
     
     def draw_square(self, square, color):
-        coord1 = [square[0][0] * 100, square[0][1] * 100]
-        coord2 = [square[1][0] * 100, square[1][1] * 100]
-        coord3 = [square[2][0] * 100, square[2][1] * 100]
-        coord4 = [square[3][0] * 100, square[3][1] * 100]
+        # Columns are X and Rows are Y, but the square is in row, col format so we have to flip it for drawing
+        coord1 = [square[0][1] * 100, square[0][0] * 100]
+        coord2 = [square[1][1] * 100, square[1][0] * 100]
+        coord3 = [square[2][1] * 100, square[2][0] * 100]
+        coord4 = [square[3][1] * 100, square[3][0] * 100]
 
         # print("coord1 is " + str(coord1))
         # print("coord2 is " + str(coord2))   
         # print("coord3 is " + str(coord3))
         # print("coord4 is " + str(coord4))
 
-        self.draw_line(coord1, coord2, color)
-        #self.draw_line(coord1, coord3, color)
-        #self.draw_line(coord2, coord4, color)
-        #self.draw_line(coord3, coord4, color)
+        self.draw_line(coord1, coord2, color, 1)  # need to offset by x amount on angled
+        self.draw_line(coord1, coord3, color, 2)
+        self.draw_line(coord2, coord4, color, 3)
+        self.draw_line(coord3, coord4, color, 4)  # need to offset by x amount on angled 
 
 
     def draw_tiles(self, x, y):
